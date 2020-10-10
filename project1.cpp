@@ -1,5 +1,5 @@
 #include <iostream>
-#include <math>
+#include <cmath>
 #include <vector>
 #include <string>
 #include "account.h"
@@ -8,6 +8,7 @@
 
 using namespace std;
 
+// controls the program
 int main() {
     return 0;
 }
