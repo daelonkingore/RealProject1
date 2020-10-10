@@ -10,5 +10,6 @@ using namespace std;
 
 // controls the program
 int main() {
+    cout << "Testing testing 123";
     return 0;
 }
