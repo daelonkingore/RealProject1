@@ -15,6 +15,7 @@ private:
 
 public:
     void setAnnualServiceChrg(int);
+    void setBalance(int);
     void calcInt();
     void yearlyCharge();
     virtual void deposit(int);
@@ -38,6 +39,10 @@ public:
 // set the Annual Charge (may be used later)
 void Account::setAnnualServiceChrg(int aServChrg) {
     annualServiceChrg = aServChrg;
+}
+
+void Account::setBalance(int newBalance) {
+    balance = newBalance;
 }
 
 // Returns values of necessary members
