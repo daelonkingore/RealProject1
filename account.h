@@ -22,12 +22,13 @@ public:
     virtual void withdraw(int);
     virtual void closeAcc();
     string getAccountNum();
+    bool getCloseFlag();
     int getBalance();
     int getAnnualInterestRate();
     int getAnnualServiceChrg();
 
     // constructor sets all the initial values
-    Account(int initialBalance, int interestRate, string accNum) {
+    Account(int initialBalance, int interestRate, int accNum) {
         /* Accepts arguments for the initial balance, an annual interest rate, and a 
         unique account number */
         balance = initialBalance;
@@ -48,6 +49,10 @@ void Account::setBalance(int newBalance) {
 // Returns values of necessary members
 string Account::getAccountNum() {
     return accountNum;
+}
+
+bool Account::getCloseFlag() {
+    return closeFlag;
 }
 
 int Account::getBalance() {
