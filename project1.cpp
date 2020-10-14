@@ -73,7 +73,6 @@ vector <string> stringToVector(string line){
 }
 
 //Used to access accounts
-<<<<<<< HEAD
 void accessAccount() {
     string inputAccNum;
     string SavNum;
@@ -178,10 +177,6 @@ void accessAccount() {
     if (choice == 4) {
         // go back
     }
-=======
-void accessAccount(){
-
->>>>>>> b314eb8da7c500e75af9c1281938bf51d1c0dd9b
 }
 
 //Generates a random number

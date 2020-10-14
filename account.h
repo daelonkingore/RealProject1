@@ -30,11 +30,7 @@ class Account {
         Account(){}
 
         // constructor sets all the initial values
-<<<<<<< HEAD
         Account(double initialBalance, double interestRate, string accNum) {
-=======
-        Account(int initialBalance, int interestRate, string accNum) {
->>>>>>> b314eb8da7c500e75af9c1281938bf51d1c0dd9b
             /* Accepts arguments for the initial balance, an annual interest rate, and a
             unique account number */
             balance = initialBalance;
@@ -42,11 +38,7 @@ class Account {
             accountNum = accNum;
         }
 
-<<<<<<< HEAD
         Account(double initialBalance, double interestRate, string accNum, bool closeFlg) {
-=======
-        Account(int initialBalance, int interestRate, string accNum, bool closeFlg) {
->>>>>>> b314eb8da7c500e75af9c1281938bf51d1c0dd9b
             /* Accepts arguments for the initial balance, an annual interest rate, and a
             unique account number */
             balance = initialBalance;
@@ -60,11 +52,7 @@ class Account {
             annualServiceChrg = aServChrg;
         }
 
-<<<<<<< HEAD
         void setBalance(double newBalance) {
-=======
-        void setBalance(int newBalance) {
->>>>>>> b314eb8da7c500e75af9c1281938bf51d1c0dd9b
             balance = newBalance;
         }
 
