@@ -73,6 +73,7 @@ vector <string> stringToVector(string line){
 }
 
 //Used to access accounts
+<<<<<<< HEAD
 void accessAccount() {
     string inputAccNum;
     string SavNum;
@@ -177,6 +178,10 @@ void accessAccount() {
     if (choice == 4) {
         // go back
     }
+=======
+void accessAccount(){
+
+>>>>>>> b314eb8da7c500e75af9c1281938bf51d1c0dd9b
 }
 
 //Generates a random number
@@ -317,9 +322,14 @@ int main() {
             createAccounts(newClient);
         }
         else if (x == "2"){
+<<<<<<< HEAD
             accessAccount();
             /*bank[0].savAcc.withdraw(50);
             cout << bank[0].savAcc.getBalance() << endl;*/
+=======
+            bank[0].savAcc.withdraw(5);
+            cout << bank[0].savAcc.getBalance() << endl;
+>>>>>>> b314eb8da7c500e75af9c1281938bf51d1c0dd9b
         }
         else if (x == "3"){
             cout << "Goodbye!" << endl;

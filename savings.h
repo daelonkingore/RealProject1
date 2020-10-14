@@ -10,6 +10,14 @@ private:
     double savingsInitialBalance;
     double savingsInterestRate;
 
+<<<<<<< HEAD
+=======
+
+public:
+    /*
+    void withdraw(int);
+    void deposit(int);*/
+>>>>>>> b314eb8da7c500e75af9c1281938bf51d1c0dd9b
 
 public:
     // constructor setting the Savings accNum
@@ -17,6 +25,7 @@ public:
 
     Savings(double initialBalance, double interestRate, string accNum) : Account(initialBalance, interestRate, accNum) {
         accountNum = "S" + accNum;
+<<<<<<< HEAD
     }
 
     Savings(double initialBalance, double interestRate, string accNum, bool closeFlg, bool stat) : Account(initialBalance, interestRate, accNum) {
@@ -28,6 +37,19 @@ public:
     void withdraw(int withdrawAmnt) {
         if (status == true && closeFlag == false) {
 
+=======
+    }
+
+    Savings(double initialBalance, double interestRate, string accNum, bool stat, bool closeFlg) : Account(initialBalance, interestRate, accNum, closeFlag) {
+        status = stat;
+        accountNum = "S" + accNum;
+    }
+
+
+    void withdraw(int withdrawAmnt) {
+        if (status == true && closeFlag == false) {
+
+>>>>>>> b314eb8da7c500e75af9c1281938bf51d1c0dd9b
             if (getBalance() - withdrawAmnt < 0) {
                 // if the withdraw amount input goes below 0, deny
                 cout << "Requested withdraw amount cause balance to go below $0. Request denied." << endl;
