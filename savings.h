@@ -6,15 +6,10 @@ class Savings : public Account {
 
 private:
     bool status = true;
-    bool denyFlag = false;
+    //bool denyFlag = false;
     double savingsInitialBalance;
     double savingsInterestRate;
 
-
-public:
-    /*
-    void withdraw(int);
-    void deposit(int);*/
 
 public:
     // constructor setting the Savings accNum
@@ -36,35 +31,37 @@ public:
             if (getBalance() - withdrawAmnt < 0) {
                 // if the withdraw amount input goes below 0, deny
                 cout << "Requested withdraw amount cause balance to go below $0. Request denied." << endl;
-                denyFlag = true;
+            }
+
+            else if (getBalance() == withdrawAmnt) {
+                // if trying to withdraw all money
+                cout << "Withdrawing all money will close the account, and a $5 service charge\n"
+                << "will be applied. Remaining money will be withdrawn. " << endl;
+                setBalance(0);
             }
 
             else if (getBalance() - withdrawAmnt < 50) {
                 // else if it doesn't go below 0, but does go below 50, service charge
-                cout << "Alert in Savings account " << getAccountNum()  << ":\n"
-                << "Withdraw amount going below $50, $5 service charge applied. "
-                << "Deactivating account until above $50. No more withdraws may be"
-                << " made until above $50." << endl;
+                cout << "Alert in Savings account " << getAccountNum()  << "A\n"
+                << "Withdraw causes balance to go below $50, $5 service charge applied.\n"
+                << "Deactivating account until above $50. No more withdraws may be\n"
+                << "made until balance is above $50." << endl;
                 status = false;
-                withdrawAmnt += 5;
-            }
-
-            if (getBalance() - withdrawAmnt < 0 and denyFlag == false) {
-                // if the service charge causes balance below 0, deny withdraw, but still charge
-                cout << "Requested withdraw amount plus service charge cause balance to go below $0. "
-                << "Request denied, service charge still applied." << endl;
                 setBalance(getBalance() - 5);
-                denyFlag = true;
+
+                if (getBalance() - withdrawAmnt < 0) {
+                    // if the service charge causes balance below 0, deny withdraw
+                    cout << "Requested withdraw amount plus service charge cause balance to go below $0.\n"
+                    << "Withdraw will only withdraw until balance is $0." << endl;
+                    setBalance(0);
+                }
+
+                else {
+                    setBalance(getBalance() - withdrawAmnt);
+                }
             }
 
-            else if (getBalance() - withdrawAmnt < 1 and getBalance() - withdrawAmnt >= 0 and denyFlag == false) {
-                // else if savings account goes below 1, close Account ( need to change after main is done )
-                cout << "ALERT in Savings account: " << getAccountNum() << ":\n"
-                << " causes the account to shut down permanently. " << endl;
-                closeAcc();
-            }
-
-            else if (getBalance() - withdrawAmnt >= 50 and denyFlag == false) {
+            else if (getBalance() - withdrawAmnt >= 50) {
                 // else if savings account stays above 50, withdraw the amount normally
                 cout << "Withdrawing: " << withdrawAmnt << endl;
                 setBalance(getBalance() - withdrawAmnt);
@@ -81,9 +78,6 @@ public:
             // if the account is closed
             cout << "This account has been permanently closed. " << endl;
         }
-        else{
-            cout << "pee pee poo poo" << endl;
-        }
     }
 
     void deposit(int depositAmnt) {
@@ -91,6 +85,9 @@ public:
         cout << "Depositing: " << depositAmnt << endl;
         setBalance(getBalance() + depositAmnt);
         cout << "New balance: " << getBalance() << endl;
+        if (getBalance() > 50) {
+            status = true;
+        }
     }
 
     bool getStatus(){
