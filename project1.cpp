@@ -370,4 +370,54 @@ void readBankFile(string fileName){
         }
     }
 
+void infoToFile(){
+    ofstream delOutFile("new.txt", ofstream::trunc);
+    delOutFile.close();
+
+    ofstream outFile ("new.txt", ofstream::app);
+
+    outFile << "Rate " << bankRate << "\n";
+
+    for (int clnt = 0; clnt < bank.size(); clnt++){
+        string aNum = bank[clnt].savAcc.getAccountNum().erase(0,1);
+
+        string stat;
+        string flg;
+        string cFlag;
+
+        if (bank[clnt].savAcc.getStatus()){
+            stat = "true";
+        }
+        else{
+            stat = "false";
+        }
+
+        if(bank[clnt].chkAcc.getFlag() == "*"){
+            flg = "*";
+        }
+        else{
+            flg = "empty";
+        }
+
+        if (bank[clnt].savAcc.getCloseFlag()){
+            cFlag = "true";
+        }
+        else{
+            cFlag = "false";
+        }
+        outFile << "Account " << bank[clnt].savAcc.getAccountNum().erase(0,1) << "\n";
+        outFile << "S" << aNum << " " << bank[clnt].savAcc.getBalance() << " " << stat << " " << cFlag << "\n";
+
+        if (bank[clnt].savAcc.getCloseFlag()){
+            cFlag = "true";
+        }
+        else{
+            cFlag = "false";
+        }
+
+        outFile << "C" << aNum << " " << bank[clnt].chkAcc.getBalance() << " " << flg << " " << cFlag << "\n";
+
+    }
+    outFile.close();
+}    
 }
