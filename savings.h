@@ -9,7 +9,6 @@ private:
     double savingsInitialBalance;
     double savingsInterestRate;
 
-
 public:
     // constructor setting the Savings accNum
     Savings(){}
@@ -21,7 +20,6 @@ public:
     Savings(double initialBalance, double interestRate, string accNum, bool stat, bool closeFlg) : Account(initialBalance, interestRate, accNum, closeFlg) {
         status = stat;
         accountNum = "S" + accNum;
-        cout << "AADHFAKDSF" << endl;
     }
 
 
@@ -41,7 +39,7 @@ public:
 
             else if (getBalance() - withdrawAmnt < 50) {
                 // else if it doesn't go below 0, but does go below 50, service charge
-                cout << "Alert in Savings account " << getAccountNum()  << "A\n"
+                cout << "Alert:\n"
                 << "Withdraw causes balance to go below $50, $5 service charge applied.\n"
                 << "Deactivating account until above $50. No more withdraws may be\n"
                 << "made until balance is above $50." << endl;

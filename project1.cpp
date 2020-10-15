@@ -42,7 +42,7 @@ void accessAccount();
 int newAccNum();
 void createAccounts(client c);
 void readBankFile(string fileName);
-void getTime();
+vector <int> getTime();
 
 // controls the program
 int main() {
@@ -207,7 +207,7 @@ void accessSavings(int clientNum){
         int choice2 = 0;
         while (choice2 != 1 and choice2 != 2) {
             if (bank[clientNum].savAcc.getBalance() < 1) {
-                cout << "ALERT in Savings account" << bank[clientNum].savAcc.getAccountNum() << " A\n"
+                cout << "ALERT\n"
                 << "The account will shut down permanently unless more money deposited.\n"
                 << "[1] Continue and close account?\n" 
                 << "[2] Deposit\n";
@@ -345,7 +345,6 @@ void readBankFile(string fileName){
             bool clsFlg;
             if (accLine[3].substr(0, 5) == "false"){
                 clsFlg = false;
-                cout << "poopy" << endl;
             }
             else{
                 clsFlg = true;

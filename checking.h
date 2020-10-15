@@ -1,3 +1,4 @@
+
 #include <string>
 using namespace std;
 // Room class declaration.
@@ -15,7 +16,6 @@ class Checking : public Account {
         Checking(double initialBalance, double interestRate, string accNum, string riskFlag, bool closeFlg):Account(initialBalance, interestRate, accNum, closeFlg){
             accountNum = "C" + accountNum;
             flag = riskFlag;
-            cout << "BACON" << endl;
         }
 
         void withdrawal(double amount){
