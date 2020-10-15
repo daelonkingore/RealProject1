@@ -54,4 +54,8 @@ class Checking : public Account {
             return flag + accountNum;
         }
 
+        string getFlag() {
+            return flag;
+        }
+
 };
