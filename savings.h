@@ -6,7 +6,6 @@ class Savings : public Account {
 
 private:
     bool status = true;
-    //bool denyFlag = false;
     double savingsInitialBalance;
     double savingsInterestRate;
 
@@ -19,15 +18,15 @@ public:
         accountNum = "S" + accNum;
     }
 
-    Savings(double initialBalance, double interestRate, string accNum, bool closeFlg, bool stat) : Account(initialBalance, interestRate, accNum) {
+    Savings(double initialBalance, double interestRate, string accNum, bool stat, bool closeFlg) : Account(initialBalance, interestRate, accNum, closeFlg) {
         status = stat;
         accountNum = "S" + accNum;
+        cout << "AADHFAKDSF" << endl;
     }
 
 
     void withdraw(int withdrawAmnt) {
         if (status == true && closeFlag == false) {
-
             if (getBalance() - withdrawAmnt < 0) {
                 // if the withdraw amount input goes below 0, deny
                 cout << "Requested withdraw amount cause balance to go below $0. Request denied." << endl;
@@ -72,11 +71,6 @@ public:
         else if (status == false and getCloseFlag() == false) {
             // if the account is inactive
             cout << "No withdraw's allowed until balance is about $50. " << endl;
-        }
-
-        else if (getCloseFlag() == true) {
-            // if the account is closed
-            cout << "This account has been permanently closed. " << endl;
         }
     }
 

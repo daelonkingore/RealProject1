@@ -8,16 +8,17 @@ class Checking : public Account {
 
         Checking(){}
 
-        Checking(int initialBalance, int interestRate, string accNum):Account(initialBalance, interestRate, accNum){
+        Checking(double initialBalance, double interestRate, string accNum):Account(initialBalance, interestRate, accNum){
             accountNum = "C" + accountNum;
         }
 
-        Checking(int initialBalance, int interestRate, string accNum, string riskFlag, bool closeFlg):Account(initialBalance, interestRate, accNum, closeFlg){
+        Checking(double initialBalance, double interestRate, string accNum, string riskFlag, bool closeFlg):Account(initialBalance, interestRate, accNum, closeFlg){
             accountNum = "C" + accountNum;
             flag = riskFlag;
+            cout << "BACON" << endl;
         }
 
-        void withdrawal(int amount){
+        void withdrawal(double amount){
             if (balance <= 0){
                 cout << "Account " << accountNum << " has insufficient funds, withdrawal request denied.";
             }
@@ -42,7 +43,7 @@ class Checking : public Account {
             }
         }
 
-        void deposit(int amount){
+        void deposit(double amount){
             if (amount > 9999){
                 cout << "Attention!\nAccount " << accountNum << " is now considered HIGH RISK!";
             }
