@@ -80,6 +80,7 @@ int main() {
             cout << "Invalid Input try again..." << endl;
         }
     }
+    infoToFile();
     return 0;
 }
 
