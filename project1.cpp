@@ -9,6 +9,8 @@
 #include <fstream>
 #include <sstream>
 #include <iterator>
+#include <chrono>
+#include <ctime>
 #include "account.h"
 #include "savings.h"
 #include "checking.h"
@@ -40,24 +42,11 @@ void accessAccount();
 int newAccNum();
 void createAccounts(client c);
 void readBankFile(string fileName);
+void getTime();
 
 // controls the program
 int main() {
-    //vector <client> bank;
     string x;
-    //string adminPass = "1234";
-    //double bankRate = 0;
-
-    /*
-    cout << "***BANK SETUP PLEASE ENTER ADMIN PASSWORD***" << endl;
-    cin >> x;
-    if (x == adminPass){
-        cout << "Welcome to bank setup!" << endl;
-        while (bankRate > 10 || bankRate < 0.1){
-            cout << "Please enter the bank's interest rate.\n*Note rate but be smaller than 10% but greater than 0.1%" << endl;
-            cin >> bankRate;
-        }
-    }*/
     cout << "Enter a bank file." << endl;
     while(true){
         cin >> x;
@@ -147,50 +136,48 @@ void accessAccount() {
 
     // Check if account number == existing num
     if (inputAccNum.substr(0, 1) == "S") {
+        cout << "SAVINGS" << endl;
         // savings
         for (int i = 0; i < bank.size(); i++) {
-            if (stoi(inputAccNum.substr(1, inputAccNum.length())) == stoi(bank[i].savAcc.getAccountNum().substr(1, bank[i].savAcc.getAccountNum().length()))) {
-                inputAccNum = savNum;
+            if (bank[i].savAcc.getCloseFlag() == false && stoi(inputAccNum.substr(1, inputAccNum.length())) == stoi(bank[i].savAcc.getAccountNum().substr(1, bank[i].savAcc.getAccountNum().length()))) {
                 clientNum = i;
+                accessSavings(clientNum);
+            }
+            else {
+                cout << "Account has been closed." << endl;
             }
         }
     }
 
     else if (inputAccNum.substr(0, 1) == "C") {
+        cout << "Checkings" << endl;
         // checking
         for (int i = 0; i < bank.size(); i++) {
-            if (stoi(inputAccNum.substr(1, inputAccNum.length())) == stoi(bank[i].chkAcc.getAccountNum().substr(1, bank[i].chkAcc.getAccountNum().length()))) {
-                inputAccNum = checkNum;
+            if (bank[i].chkAcc.getCloseFlag() == false && stoi(inputAccNum.substr(1, inputAccNum.length())) == stoi(bank[i].chkAcc.getAccountNum().substr(1, bank[i].chkAcc.getAccountNum().length()))) {
                 clientNum = i;
+                cout << "inside checkings" << endl;
+                accessChecking(clientNum);
             }
         }
     }
 
     else {
-        cout << "Account number invalid, try again." << endl;
+        cout << "Account number invalid or closed, try again." << endl;
         accessAccount();
     }
-
-    if (inputAccNum == savNum)
-        accessSavings(clientNum);
-
-    else if ( inputAccNum == checkNum) 
-        accessChecking(clientNum);
 }
 
 void accessSavings(int clientNum){
     int choice;
-    int depositAmm;
-    int withdrawAmm;
+    double depositAmm;
+    double withdrawAmm;
 
-    do {
-        cin.ignore(numeric_limits<streamsize>::max(),'\n'); 
+    while (choice != 4) {
         cout << "[1] Deposit\n"
         << "[2] Withdraw\n"
         << "[3] Check Balance\n"
         << "[4] Go back" << endl;
         cin >> choice;
-        cin.ignore(numeric_limits<streamsize>::max(),'\n'); 
         
         if (choice != 1 and choice != 2 and choice != 3 and choice != 4) {
             cout << "Enter 1, 2, 3, or 4." << endl;
@@ -213,47 +200,46 @@ void accessSavings(int clientNum){
         case 3: // check balance
             cout << bank[clientNum].savAcc.getBalance() << endl;
             break;
-        case 4:
-        {
-            int choice2 = 0;
-            while (choice2 != 1 and choice2 != 2) {
-                if (bank[clientNum].savAcc.getBalance() < 1) {
-                    cout << "ALERT in Savings accountA" << bank[clientNum].savAcc.getAccountNum() << ":\n"
-                    << " causes the account to shut down permanently unless more money deposited.\n"
-                    << "[1] Continue and close account?\n" 
-                    << "[2] Deposit\n";
-                    cin >> choice2;
-
-                    if (choice2 == 1) {
-                        cout << "Closing account permanently." << endl;
-                        bank[clientNum].savAcc.closeAcc();
-                        main();
-                    }
-
-                    if (choice2 == 2) {
-                        cout << "Enter deposit amount: " << endl;
-                        cin >> depositAmm;
-                        bank[clientNum].savAcc.deposit(depositAmm);
-                        main();
-                    }
-                }
-                else {
-                    choice2 = 1;
-                    main();
-                }
-            }
-        }
         }
     }
-    while (choice != 4);
+
+    if (choice == 4) {
+        int choice2 = 0;
+        while (choice2 != 1 and choice2 != 2) {
+            if (bank[clientNum].savAcc.getBalance() < 1) {
+                cout << "ALERT in Savings account" << bank[clientNum].savAcc.getAccountNum() << " A\n"
+                << "The account will shut down permanently unless more money deposited.\n"
+                << "[1] Continue and close account?\n" 
+                << "[2] Deposit\n";
+                cin >> choice2;
+
+                if (choice2 == 1) {
+                    cout << "Closing account permanently." << endl;
+                    bank[clientNum].savAcc.closeAcc();
+                    break;
+                }
+
+                if (choice2 == 2) {
+                    cout << "Enter deposit amount: " << endl;
+                    cin >> depositAmm;
+                    bank[clientNum].savAcc.deposit(depositAmm);
+                    break;
+                }
+            }
+            else {
+                choice2 = 1;
+                break;
+            }
+        }
+    }
 }
 
 void accessChecking(int clientNum) {
     int choice;
-    int depositAmm;
-    int withdrawAmm;
+    double depositAmm;
+    double withdrawAmm;
 
-    do {
+    while (choice != 4) {
         cout << "[1] Deposit\n"
         << "[2] Withdraw\n"
         << "[3] Check Balance\n"
@@ -271,22 +257,19 @@ void accessChecking(int clientNum) {
             cout << "Enter deposit amount: " << endl;
             cin >> depositAmm;
             bank[clientNum].chkAcc.deposit(depositAmm);
+            break;
         case 2: // withdraw
         {
             cout << "Enter withdraw amount: " << endl;
             cin >> withdrawAmm;
             bank[clientNum].chkAcc.withdrawal(withdrawAmm);
+            break;
         }
         case 3: // check balance
-            bank[clientNum].chkAcc.getBalance();
-        case 4:
-            main();
-        default:
-            cout << "Error" << endl;
-            accessAccount();
+            cout << bank[clientNum].chkAcc.getBalance() << endl;
+            break;
         }
     }
-    while (choice != 4);
 }
 
 // Generates a random number
@@ -360,8 +343,9 @@ void readBankFile(string fileName){
             }
 
             bool clsFlg;
-            if (accLine[3] == "false"){
+            if (accLine[3].substr(0, 5) == "false"){
                 clsFlg = false;
+                cout << "poopy" << endl;
             }
             else{
                 clsFlg = true;
@@ -375,7 +359,7 @@ void readBankFile(string fileName){
                 accLine[2] = "";
             }
 
-            if (accLine[2] == "false"){
+            if (accLine[3].substr(0, 5) == "false"){
                 clsFlg = false;
             }
             else{
