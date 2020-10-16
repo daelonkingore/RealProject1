@@ -37,7 +37,7 @@ class Account {
             closeFlag = closeFlg;
         }
 
-                // set the Annual Charge (may be used later)
+        // setters for some of the protected variables
         void setAnnualServiceChrg(int aServChrg) {
             annualServiceChrg = aServChrg;
         }
@@ -75,8 +75,7 @@ class Account {
         }
 
         virtual void withdraw(double withdrawAmnt) {
-            /* A virtual function that accepts an argument for the amount of the withdrawal.
-            Eventually, the function should subtract the argument value from the balance */
+            /* A virtual function that accepts an argument for the amount of the withdrawal. */
             balance -= withdrawAmnt;
         }
 
@@ -87,8 +86,7 @@ class Account {
 
         void calcInt() {
             /* A function that updates the balance by calculating the daily interest earned
-            by the account and adding this interest to the balance. This should be performed
-            by the following formulas */
+            by the account and adding this interest to the balance. */
 
             dailyInterestRate = annualInterestRate / 365;
             dailyinterest = balance * dailyInterestRate;
@@ -97,8 +95,7 @@ class Account {
 
         // yearly charge may be used later
         void yearlyCharge() {
-            /* A function that will subtract the yearly service charge from the balance.
-            Yearly service charge must not be subtracted more than once in a given calendar year */
+            /* A function that will subtract the yearly service charge from the balance. */
             yearChrg = true;
             balance -= annualServiceChrg;
         }
@@ -119,29 +116,34 @@ class Account {
         
 
         vector <int> getTime() {
-            // gets current time
+            /* Gets the time and date from the computer and put it into a vector, erases
+            useless parts, turns the date into numbers and put into date vector.
+            Returns the date vector.
+            
+            Contains: use of ctime and chrono, if and if else statements, vectors */
+
             string timeAndDate, strMonth;
             int month, day, year;
             vector <int> date;
 
+            // gets the date and time information from computer
             auto time = std::chrono::system_clock::now();
             std::time_t end_time = std::chrono::system_clock::to_time_t(time);
             timeAndDate = std::ctime(&end_time);
 
+            // puts that info into a vector using stringToVector
             vector <string> vectorTime = stringToVector(timeAndDate);
 
+            // get rid of the useless parts
             vectorTime.erase(vectorTime.begin());
             vectorTime.erase(vectorTime.begin() + 2);
 
-            for (int i = 0; i < vectorTime.size(); i++) {
-                cout << vectorTime[i] << endl;
-            }
-
+            // turns numbers into ints (except for strMonth)
             strMonth = vectorTime[0];
             day = stoi(vectorTime[1].substr(0, 2));
             year = stoi(vectorTime[2].substr(0, 4));
 
-            // month
+            // if statements determining the number value correlating to the month name
             if (strMonth == "Jan") {
                 month = 1;
             }
@@ -179,6 +181,7 @@ class Account {
                 month = 12;
             }
 
+            // puts the final info into date vector
             date.push_back(month);
             date.push_back(day);
             date.push_back(year);

@@ -10,7 +10,7 @@ private:
     double savingsInterestRate;
 
 public:
-    // constructor setting the Savings accNum
+    // constructors setting the Savings values
     Savings(){}
 
     Savings(double initialBalance, double interestRate, string accNum) : Account(initialBalance, interestRate, accNum) {
@@ -24,6 +24,14 @@ public:
 
 
     void withdraw(int withdrawAmnt) {
+        /* Withdraws the inputed amount of money from the savings account. Checks if the account is active
+        and not closed, then checks if the amount inputed will make the balance go below 50, below 1, or below 0.
+        In those cases, prints correlating messages and performs actions accordingly. Otherwise, withdraws the 
+        money normally.
+
+        Contains a line of if statements and else if statements to get desired outcome. */
+
+        // if the account isn't inactive or closed
         if (status == true && closeFlag == false) {
             if (getBalance() - withdrawAmnt < 0) {
                 // if the withdraw amount input goes below 0, deny
@@ -35,6 +43,7 @@ public:
                 cout << "Withdrawing all money will close the account, and a $5 service charge\n"
                 << "will be applied. Remaining money will be withdrawn. " << endl;
                 setBalance(0);
+                status = false;
             }
 
             else if (getBalance() - withdrawAmnt < 50) {
@@ -73,13 +82,20 @@ public:
     }
 
     void deposit(int depositAmnt) {
+        /* Deposits the inputed amount into savings. Also checks if the balance of savings
+        is above 50, if it is, makes sure the status is true. */
         // deposit the amount into account
         cout << "Depositing: " << depositAmnt << endl;
         setBalance(getBalance() + depositAmnt);
         cout << "New balance: " << getBalance() << endl;
         if (getBalance() > 50) {
             status = true;
+            cout << "AH" << endl;
         }
+    }
+
+    void setStatus(bool s) {
+        status = s;
     }
 
     bool getStatus(){

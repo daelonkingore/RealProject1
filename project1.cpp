@@ -70,8 +70,6 @@ int main() {
         }
         else if (x == "2"){
             accessAccount();
-            /*bank[0].savAcc.withdraw(50);
-            cout << bank[0].savAcc.getBalance() << endl;*/
         }
         else if (x == "3"){
             cout << "Goodbye!" << endl;
@@ -128,6 +126,9 @@ vector <string> stringToVector(string line){
 
 // Used to access accounts
 void accessAccount() {
+    /* Asks the user for an account number and determines if the account is for savings or checking.
+    It then either calls the accessSavings function or accessChecking function. Otherwise, invalid input. */
+
     string inputAccNum;
     string savNum;
     string checkNum;
@@ -136,12 +137,12 @@ void accessAccount() {
     cout << "Please input your Checking or Savings account number: ";
     cin >> inputAccNum;
 
-    // Check if account number == existing num
+    // Check if inputed account number is equal to an existing account number
     if (inputAccNum.substr(0, 1) == "S") {
-        cout << "SAVINGS" << endl;
-        // savings
+        // if it is savings
         for (int i = 0; i < bank.size(); i++) {
             if (bank[i].savAcc.getCloseFlag() == false && stoi(inputAccNum.substr(1, inputAccNum.length())) == stoi(bank[i].savAcc.getAccountNum().substr(1, bank[i].savAcc.getAccountNum().length()))) {
+                // above if statement is just testing the number part of the inputed account number against the existing one
                 clientNum = i;
                 accessSavings(clientNum);
             }
@@ -152,12 +153,11 @@ void accessAccount() {
     }
 
     else if (inputAccNum.substr(0, 1) == "C") {
-        cout << "Checkings" << endl;
         // checking
         for (int i = 0; i < bank.size(); i++) {
             if (bank[i].chkAcc.getCloseFlag() == false && stoi(inputAccNum.substr(1, inputAccNum.length())) == stoi(bank[i].chkAcc.getAccountNum().substr(1, bank[i].chkAcc.getAccountNum().length()))) {
+                // above if statement is just testing the number part of the inputed account number against the existing one
                 clientNum = i;
-                cout << "inside checkings" << endl;
                 accessChecking(clientNum);
             }
         }
@@ -170,10 +170,18 @@ void accessAccount() {
 }
 
 void accessSavings(int clientNum){
+    /* Asks the user to either deposit, withdraw, check their balance, or go back.
+    Deposit, withdraw, and check balance calls are all within a switch statement, and simply
+    call their respective class functions. For going back, the function first makes sure
+    the user knows if their balance is below $1 the account will close. 
+    
+    Contains: switch statment, while loops, if and else statments*/
+
     int choice;
     double depositAmm;
     double withdrawAmm;
 
+    // loop until user inputs to go back
     while (choice != 4) {
         cout << "[1] Deposit\n"
         << "[2] Withdraw\n"
@@ -181,10 +189,13 @@ void accessSavings(int clientNum){
         << "[4] Go back" << endl;
         cin >> choice;
         
+        // make sure input is 1, 2, 3, or 4
         if (choice != 1 and choice != 2 and choice != 3 and choice != 4) {
             cout << "Enter 1, 2, 3, or 4." << endl;
             accessAccount();
         }
+
+        // user chooses to deposit, withdraw, or check balance
         switch (choice) 
         {
         case 1: // deposit
@@ -205,22 +216,25 @@ void accessSavings(int clientNum){
         }
     }
 
+    // if the user chose to go back
     if (choice == 4) {
         int choice2 = 0;
         while (choice2 != 1 and choice2 != 2) {
-            if (bank[clientNum].savAcc.getBalance() < 1) {
+            if (bank[clientNum].savAcc.getBalance() < 1) { // if the balance is lower than $1, warn the user
                 cout << "ALERT\n"
                 << "The account will shut down permanently unless more money deposited.\n"
                 << "[1] Continue and close account?\n" 
                 << "[2] Deposit\n";
                 cin >> choice2;
 
+                // if the user chooses to close account
                 if (choice2 == 1) {
                     cout << "Closing account permanently." << endl;
                     bank[clientNum].savAcc.closeAcc();
                     break;
                 }
 
+                // if the user chooses to deposit
                 if (choice2 == 2) {
                     cout << "Enter deposit amount: " << endl;
                     cin >> depositAmm;
@@ -228,7 +242,8 @@ void accessSavings(int clientNum){
                     break;
                 }
             }
-            else {
+
+            else { // breaks out of accessing account
                 choice2 = 1;
                 break;
             }
@@ -237,10 +252,17 @@ void accessSavings(int clientNum){
 }
 
 void accessChecking(int clientNum) {
+    /* Asks the user to either deposit, withdraw, check their balance, or go back.
+    Calls respective class functions. For going back, the while loop will check
+    if the inputed value is 4, and just stop. 
+    
+    Contains: switch statment, while loop, if statment*/
+
     int choice;
     double depositAmm;
     double withdrawAmm;
 
+    // loops until user inputs 4
     while (choice != 4) {
         cout << "[1] Deposit\n"
         << "[2] Withdraw\n"
@@ -248,11 +270,13 @@ void accessChecking(int clientNum) {
         << "[4] Go back" << endl;
         cin >> choice;
 
+        // make sure input is 1, 2, 3, or 4
         if (choice != 1 and choice != 2 and choice != 3 and choice != 4){
             cout << "Enter 1, 2, 3, or 4." << endl;
             accessAccount();
         }
 
+        // user chooses to deposit, withdraw, or check balance
         switch (choice) 
         {
         case 1: // deposit
