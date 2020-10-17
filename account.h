@@ -1,3 +1,5 @@
+/* Group members: Daelon Kingore M03120686, Ashton Barnwell M03234066 */
+
 #include <string>
 using namespace std;
 
@@ -9,7 +11,7 @@ class Account {
         double annualInterestRate;
         double annualServiceChrg = 5;
         double dailyInterestRate;
-        double dailyinterest;
+        double dailyInterest;
         bool closeFlag = false;
         vector <int> date;
         vector <int> lastAccessDate;
@@ -26,18 +28,19 @@ class Account {
             annualInterestRate = interestRate;
             accountNum = accNum;
             date = getTime();
-            lastAccessDate = date;
+            lastAccessDate = getTime();
         }
 
         Account(double initialBalance, double interestRate, string accNum, bool closeFlg, vector <int> createDate, vector <int> lastAccess) {
             /* Accepts arguments for the initial balance, an annual interest rate, and a
             unique account number */
             balance = initialBalance;
-            annualInterestRate = interestRate;
+            annualInterestRate = interestRate/100;
             accountNum = accNum;
             closeFlag = closeFlg;
             date = createDate;
             lastAccessDate = lastAccess;
+            calcInt();
         }
 
         // setters for some of the protected variables
@@ -70,6 +73,14 @@ class Account {
             return annualServiceChrg;
         }
 
+        vector <int> getDate() {
+            return date;
+        }
+
+        vector <int> getLastAccess() {
+            return lastAccessDate;
+        }
+
         // functions to change balance, close account, and mess with interest
         virtual void deposit(double depositAmnt) {
             /* A virtual function that accepts an argument for the amount of the deposit.
@@ -88,24 +99,56 @@ class Account {
         }
 
         void calcInt() {
-            /* A function that updates the balance by calculating the daily interest earned
-            by the account and adding this interest to the balance. */
+            /* A function that updates the balance. Checks how far ahead the access date is, 
+            adds the calculated interest into balance. 
+            
+            Contains: vector, if and else statments, for loops */
+            vector <int> accessDate = getTime();
+            int year, days;
 
             dailyInterestRate = annualInterestRate / 365;
-            dailyinterest = balance * dailyInterestRate;
-            balance += dailyinterest;
+            dailyInterest = balance * dailyInterestRate;
+
+            // if the access date year is bigger than the previous access date
+            if (accessDate[1] > lastAccessDate[1]) {
+                year = accessDate[1] - lastAccessDate[1];
+                if (accessDate[0] == lastAccessDate[0]) { // if accessing on the same day a year later
+                    for (int i = 0; i < year; i++) {
+                        balance += (balance * annualInterestRate);
+                    }
+                }
+                else { // otherwise, calculate how many days more
+                    days = 365 - lastAccessDate[1];
+                    days += 365 * (year - 1);
+                    days += accessDate[1];
+                    for (int i = 0; i < days; i++) {
+                        dailyInterest = balance * dailyInterestRate;
+                        balance += dailyInterest;
+                    }
+                }
+            }
+            else { // If the access date is not bigger than a year, find how many more days
+                if (accessDate[0] > lastAccessDate[0]) {
+                    days = accessDate[0] - lastAccessDate[0];
+                    for (int i = 0; i < days; i++) {
+                        dailyInterest = balance * dailyInterestRate;
+                        balance += dailyInterest;
+                    }
+                }
+            }
+            lastAccessDate = getTime();
         }
 
         // yearly charge may be used later
         void yearlyCharge() {
             /* A function that will subtract the yearly service charge from the balance. */
-            vector <int> accessDate = getTime();
+        /*    vector <int> accessDate = getTime();
 
             if(accessDate[2] > date[2] && accessDate[1] > date[1] && accessDate[0] > date[0]){
                 if(lastYearlyCharge < accessDate[2]){
                     balance -= annualServiceChrg;
                 }
-            }
+            }*/
         }
 
         // Converts string to vector
@@ -189,8 +232,12 @@ class Account {
                 month = 12;
             }
 
+            int daysPerMonth[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+            while (month-- > 0) {
+                day = day + daysPerMonth[month - 1];
+            }
+
             // puts the final info into date vector
-            date.push_back(month);
             date.push_back(day);
             date.push_back(year);
 

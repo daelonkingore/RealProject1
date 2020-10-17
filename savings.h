@@ -1,3 +1,5 @@
+/* Group members: Daelon Kingore M03120686, Ashton Barnwell M03234066 */
+
 #include <string>
 using namespace std;
 
@@ -17,7 +19,7 @@ public:
         accountNum = "S" + accNum;
     }
 
-    Savings(double initialBalance, double interestRate, string accNum, bool stat, bool closeFlg) : Account(initialBalance, interestRate, accNum, closeFlg) {
+    Savings(double initialBalance, double interestRate, string accNum, bool stat, bool closeFlg, vector <int> createDate, vector <int> lastAccess) : Account(initialBalance, interestRate, accNum, closeFlg, createDate, lastAccess) {
         status = stat;
         accountNum = "S" + accNum;
     }

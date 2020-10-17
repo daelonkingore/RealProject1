@@ -1,3 +1,4 @@
+/* Group members: Daelon Kingore M03120686, Ashton Barnwell M03234066 */
 
 #include <string>
 using namespace std;
@@ -13,7 +14,7 @@ class Checking : public Account {
             accountNum = "C" + accountNum;
         }
 
-        Checking(double initialBalance, double interestRate, string accNum, string riskFlag, bool closeFlg):Account(initialBalance, interestRate, accNum, closeFlg){
+        Checking(double initialBalance, double interestRate, string accNum, string riskFlag, bool closeFlg, vector <int> createDate, vector <int> lastAccess):Account(initialBalance, interestRate, accNum, closeFlg, createDate, lastAccess){
             accountNum = "C" + accountNum;
             flag = riskFlag;
         }

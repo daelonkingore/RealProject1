@@ -1,3 +1,5 @@
+/* Group members: Daelon Kingore M03120686, Ashton Barnwell M03234066 */
+
 #include <iostream>
 #include <cmath>
 #include <vector>
@@ -44,12 +46,13 @@ void createAccounts(client c);
 void readBankFile(string fileName);
 vector <int> getTime();
 void infoToFile();
+vector <int> formatDate(string date);
 
 // controls the program
 int main() {
     string x;
-    cout << "Enter a bank file." << endl;
     while(true){
+        cout << "Enter a bank file." << endl;
         cin >> x;
         try{
             readBankFile(x);
@@ -81,6 +84,22 @@ int main() {
     }
     infoToFile();
     return 0;
+}
+
+vector <int> formatDate(string date) {
+    /* Takes the date from the file and seperates it wherever the / is found.
+    Puts the separated day and year into a vector and returns the vector.
+    
+    Contains: vector */
+    int day, year;
+    vector <int> theDate;
+
+    day = stoi(date.substr(0, date.find("/")));
+    year = stoi(date.substr(date.find("/") + 1, 4));
+
+    theDate.push_back(day);
+    theDate.push_back(year);
+    return theDate;
 }
 
 // Converts input file to vector
@@ -183,7 +202,7 @@ void accessSavings(int clientNum){
 
     // loop until user inputs to go back
     while (choice != 4) {
-        cout << "Welcome! User: " << bank[chkAcc].getAccountNum();
+        cout << "Welcome! User: " << bank[clientNum].savAcc.getAccountNum();
         if (bank[clientNum].savAcc.getBalance() < 1) { // if the balance is lower than $1, warn the user
             cout << "ALERT\n"
             << "The account will shut down permanently unless more money deposited." << endl;
@@ -275,7 +294,7 @@ void accessChecking(int clientNum) {
 
     // loops until user inputs 4
     while (choice != 4) {
-        cout << "Welcome! User: " << bank[chkAcc].getAccountNum();
+        cout << "Welcome! User: " << bank[clientNum].chkAcc.getAccountNum();
         if (bank[clientNum].chkAcc.getBalance() < 0) { // if the balance is lower than $1, warn the user
             cout << "ALERT\n"
             << "Balance went below zero your account is now considered HIGH RISK." << endl;
@@ -368,7 +387,7 @@ void readBankFile(string fileName){
         vector <string> line = stringToVector(file[i]);
 
         if (line[0] == "Rate"){ //Gets bank rate from file
-            if(stod(line[1]) > 0.1 && stod(line[1]) < 10){
+            if(stod(line[1]) >= 0.1 && stod(line[1]) <= 10){
                 bankRate = stod(line[1]);
             }
             else{
@@ -379,7 +398,6 @@ void readBankFile(string fileName){
         else if (line[0] == "Account"){ //Gets account information from file
             numList.push_back(line[1]);
             client newClient;
-
             vector <string> accLine = stringToVector(file[i+1]);
 
             bool stat;
@@ -404,7 +422,12 @@ void readBankFile(string fileName){
                 throw "badFile";
             }
 
-            newClient.savAcc = Savings(stod(accLine[1]), bankRate, line[1], stat, clsFlg);
+            vector <int> createDate = formatDate(accLine[4]);
+            cout << accLine[4] << endl;
+            cout << accLine[5] << endl;
+            vector <int> lastAccess = formatDate(accLine[5]);
+
+            newClient.savAcc = Savings(stod(accLine[1]), bankRate, line[1], stat, clsFlg, createDate, lastAccess);
 
             accLine = stringToVector(file[i+2]);
 
@@ -426,7 +449,10 @@ void readBankFile(string fileName){
                 throw "badFile";
             }
 
-            newClient.chkAcc = Checking(stod(accLine[1]), bankRate, line[1], accLine[2], clsFlg);
+            createDate = formatDate(accLine[4]);
+            lastAccess = formatDate(accLine[5]);
+
+            newClient.chkAcc = Checking(stod(accLine[1]), bankRate, line[1], accLine[2], clsFlg, createDate, lastAccess);
 
             bank.push_back(newClient);
         }
@@ -444,9 +470,8 @@ void infoToFile(){
     for (int clnt = 0; clnt < bank.size(); clnt++){
         string aNum = bank[clnt].savAcc.getAccountNum().substr(1,4);
 
-        string stat;
-        string flg;
-        string cFlag;
+        string stat, flg, cFlag;
+        vector <int> date, lastAccess;
 
         if (bank[clnt].savAcc.getStatus()){
             stat = "true";
@@ -468,17 +493,22 @@ void infoToFile(){
         else{
             cFlag = "false";
         }
-        outFile << "Account " << bank[clnt].savAcc.getAccountNum().erase(0,1) << "\n";
-        outFile << "S" << aNum << " " << bank[clnt].savAcc.getBalance() << " " << stat << " " << cFlag << "\n";
+        date = bank[clnt].savAcc.getDate();
+        lastAccess = bank[clnt].savAcc.getLastAccess();
 
-        if (bank[clnt].savAcc.getCloseFlag()){
+        outFile << "Account " << bank[clnt].savAcc.getAccountNum().erase(0,1) << "\n";
+        outFile << "S" << aNum << " " << bank[clnt].savAcc.getBalance() << " " << stat << " " << cFlag << " " << date[0] << "/" << date[1] << " " << lastAccess[0] << "/" << lastAccess[1] << "\n";
+
+        if (bank[clnt].chkAcc.getCloseFlag()){
             cFlag = "true";
         }
         else{
             cFlag = "false";
         }
 
-        outFile << "C" << aNum << " " << bank[clnt].chkAcc.getBalance() << " " << flg << " " << cFlag << "\n";
+        date = bank[clnt].chkAcc.getDate();
+        lastAccess = bank[clnt].chkAcc.getLastAccess();
+        outFile << "C" << aNum << " " << bank[clnt].chkAcc.getBalance() << " " << flg << " " << cFlag << " " << date[0] << "/" << date[1] << " " << lastAccess[0] << "/" << lastAccess[1] << "\n";
 
     }
     outFile.close();
