@@ -76,7 +76,7 @@ int main() {
             break;
         }
         else{
-            cout << "Invalid Input try again..." << endl;
+            cout << "Invalid bank file try again..." << endl;
         }
     }
     infoToFile();
@@ -173,8 +173,8 @@ void accessSavings(int clientNum){
     /* Asks the user to either deposit, withdraw, check their balance, or go back.
     Deposit, withdraw, and check balance calls are all within a switch statement, and simply
     call their respective class functions. For going back, the function first makes sure
-    the user knows if their balance is below $1 the account will close. 
-    
+    the user knows if their balance is below $1 the account will close.
+
     Contains: switch statment, while loops, if and else statments*/
 
     int choice;
@@ -183,12 +183,23 @@ void accessSavings(int clientNum){
 
     // loop until user inputs to go back
     while (choice != 4) {
+        cout << "Welcome! User: " << bank[chkAcc].getAccountNum();
+        if (bank[clientNum].savAcc.getBalance() < 1) { // if the balance is lower than $1, warn the user
+            cout << "ALERT\n"
+            << "The account will shut down permanently unless more money deposited." << endl;
+            bank[clientNum].savAcc.setStatus(false);
+        }
+        else if(bank[clientNum].savAcc.getBalance() < 50){
+            cout << "ALERT\n"
+            << "Your account's balance has gone below $50 withdrawls are denied until balance exceeds $50" << endl;
+            bank[clientNum].savAcc.setStatus(false);
+        }
         cout << "[1] Deposit\n"
         << "[2] Withdraw\n"
         << "[3] Check Balance\n"
         << "[4] Go back" << endl;
         cin >> choice;
-        
+
         // make sure input is 1, 2, 3, or 4
         if (choice != 1 and choice != 2 and choice != 3 and choice != 4) {
             cout << "Enter 1, 2, 3, or 4." << endl;
@@ -196,7 +207,7 @@ void accessSavings(int clientNum){
         }
 
         // user chooses to deposit, withdraw, or check balance
-        switch (choice) 
+        switch (choice)
         {
         case 1: // deposit
             cout << "Enter deposit amount: " << endl;
@@ -223,7 +234,7 @@ void accessSavings(int clientNum){
             if (bank[clientNum].savAcc.getBalance() < 1) { // if the balance is lower than $1, warn the user
                 cout << "ALERT\n"
                 << "The account will shut down permanently unless more money deposited.\n"
-                << "[1] Continue and close account?\n" 
+                << "[1] Continue and close account?\n"
                 << "[2] Deposit\n";
                 cin >> choice2;
 
@@ -254,8 +265,8 @@ void accessSavings(int clientNum){
 void accessChecking(int clientNum) {
     /* Asks the user to either deposit, withdraw, check their balance, or go back.
     Calls respective class functions. For going back, the while loop will check
-    if the inputed value is 4, and just stop. 
-    
+    if the inputed value is 4, and just stop.
+
     Contains: switch statment, while loop, if statment*/
 
     int choice;
@@ -264,6 +275,12 @@ void accessChecking(int clientNum) {
 
     // loops until user inputs 4
     while (choice != 4) {
+        cout << "Welcome! User: " << bank[chkAcc].getAccountNum();
+        if (bank[clientNum].chkAcc.getBalance() < 0) { // if the balance is lower than $1, warn the user
+            cout << "ALERT\n"
+            << "Balance went below zero your account is now considered HIGH RISK." << endl;
+            bank[clientNum].chkAcc.setFlag("*");
+        }
         cout << "[1] Deposit\n"
         << "[2] Withdraw\n"
         << "[3] Check Balance\n"
@@ -277,7 +294,7 @@ void accessChecking(int clientNum) {
         }
 
         // user chooses to deposit, withdraw, or check balance
-        switch (choice) 
+        switch (choice)
         {
         case 1: // deposit
             cout << "Enter deposit amount: " << endl;
@@ -351,7 +368,12 @@ void readBankFile(string fileName){
         vector <string> line = stringToVector(file[i]);
 
         if (line[0] == "Rate"){ //Gets bank rate from file
-            bankRate = stod(line[1]);
+            if(stod(line[1]) > 0.1 && stod(line[1]) < 10){
+                bankRate = stod(line[1]);
+            }
+            else{
+                throw "badFile";
+            }
         }
 
         else if (line[0] == "Account"){ //Gets account information from file
@@ -364,16 +386,22 @@ void readBankFile(string fileName){
             if (accLine[2] == "false"){
                 stat = false;
             }
-            else{
+            else if (accLine[2] == "true"){
                 stat = true;
+            }
+            else{
+                throw "badFile";
             }
 
             bool clsFlg;
             if (accLine[3].substr(0, 5) == "false"){
                 clsFlg = false;
             }
-            else{
+            else if(accLine[3].substr(0, 4) == "true"){
                 clsFlg = true;
+            }
+            else{
+                throw "badFile";
             }
 
             newClient.savAcc = Savings(stod(accLine[1]), bankRate, line[1], stat, clsFlg);
@@ -384,12 +412,20 @@ void readBankFile(string fileName){
                 accLine[2] = "";
             }
 
+            else if (accLine[2] != "*"){
+                throw "badFile";
+            }
+
             if (accLine[3].substr(0, 5) == "false"){
                 clsFlg = false;
             }
-            else{
+            else if(accLine[3].substr(0, 4) == "true"){
                 clsFlg = true;
             }
+            else{
+                throw "badFile";
+            }
+
             newClient.chkAcc = Checking(stod(accLine[1]), bankRate, line[1], accLine[2], clsFlg);
 
             bank.push_back(newClient);
@@ -446,4 +482,4 @@ void infoToFile(){
 
     }
     outFile.close();
-}    
+}
