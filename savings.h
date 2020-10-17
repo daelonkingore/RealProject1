@@ -40,10 +40,10 @@ public:
                 cout << "Requested withdraw amount cause balance to go below $0. Request denied." << endl;
             }
 
-            else if (getBalance() == withdrawAmnt) {
+            else if ((balance - withdrawAmnt) == 0) {
                 // if trying to withdraw all money
                 cout << "Withdrawing all money will close the account, and a $5 service charge\n"
-                << "will be applied. Remaining money will be withdrawn. " << endl;
+                << "will be applied. Remaining money will be withdrawn. \n" << endl;
                 setBalance(0);
                 status = false;
             }
@@ -53,14 +53,14 @@ public:
                 cout << "Alert:\n"
                 << "Withdraw causes balance to go below $50, $5 service charge applied.\n"
                 << "Deactivating account until above $50. No more withdraws may be\n"
-                << "made until balance is above $50." << endl;
+                << "made until balance is above $50.\n" << endl;
                 status = false;
                 setBalance(getBalance() - 5);
 
                 if (getBalance() - withdrawAmnt < 0) {
                     // if the service charge causes balance below 0, deny withdraw
                     cout << "Requested withdraw amount plus service charge cause balance to go below $0.\n"
-                    << "Withdraw will only withdraw until balance is $0." << endl;
+                    << "Withdraw will only withdraw until balance is $0.\n" << endl;
                     setBalance(0);
                 }
 
@@ -79,7 +79,7 @@ public:
 
         else if (status == false and getCloseFlag() == false) {
             // if the account is inactive
-            cout << "No withdraw's allowed until balance is about $50. " << endl;
+            cout << "No withdraw's allowed until balance is about $50. \n" << endl;
         }
     }
 
@@ -92,7 +92,6 @@ public:
         cout << "New balance: " << getBalance() << endl;
         if (getBalance() > 50) {
             status = true;
-            cout << "AH" << endl;
         }
     }
 

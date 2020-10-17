@@ -29,6 +29,7 @@ class Account {
             accountNum = accNum;
             date = getTime();
             lastAccessDate = getTime();
+            closeFlag = false;
         }
 
         Account(double initialBalance, double interestRate, string accNum, bool closeFlg, vector <int> createDate, vector <int> lastAccess) {

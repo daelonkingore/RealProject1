@@ -21,16 +21,16 @@ class Checking : public Account {
 
         void withdrawal(double amount){
             if (balance <= 0){
-                cout << "Account " << accountNum << " has insufficient funds, withdrawal request denied.";
+                cout << "This account has insufficient funds, withdrawal request denied." << endl;
             }
             else{
                 if ((balance - amount) < 0){
-                    cout << "non-sufficient funds a charge of $25 will be made to this account" << endl;
+                    cout << "Non-sufficient funds a charge of $25 will be made to this account" << endl;
 
                     if ((balance - 25) < 0){
                         balance -= 25;
-                        cout << "After $25 insufficient fund charge was made to account " << accountNum << " balance is now "
-                        << balance << " account is now considered HIGH RISK!";
+                        cout << "After $25 insufficient fund charge was made to this account, balance is now "
+                        << getBalance() << " account is now considered HIGH RISK!" << endl;
                         flag = "*";
                     }
 
@@ -46,13 +46,18 @@ class Checking : public Account {
 
         void deposit(double amount){
             if (amount > 9999){
-                cout << "Attention!\nAccount " << accountNum << " is now considered HIGH RISK!";
+                cout << "Attention\n" << "This account is now considered HIGH RISK\n" << endl;
+                flag = "*";
             }
             balance += amount;
         }
 
         string getAccountNum(){
             return flag + accountNum;
+        }
+
+        string getAN(){
+            return accountNum;
         }
 
         string getFlag() {

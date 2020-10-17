@@ -45,17 +45,17 @@ int newAccNum();
 void createAccounts(client c);
 void readBankFile(string fileName);
 vector <int> getTime();
-void infoToFile();
+void infoToFile(string fileName);
 vector <int> formatDate(string date);
 
 // controls the program
 int main() {
-    string x;
+    string fileName, input;
     while(true){
         cout << "Enter a bank file." << endl;
-        cin >> x;
+        cin >> fileName;
         try{
-            readBankFile(x);
+            readBankFile(fileName);
             break;
         }
         catch(...){
@@ -66,15 +66,15 @@ int main() {
     while(true){
         cout << "Please Enter a Command.\n[1] New Account\n[2] Access Existing Account\n[3] Exit" << endl;
 
-        cin >> x;
-        if (x == "1"){
+        cin >> input;
+        if (input == "1"){
             client newClient;
             createAccounts(newClient);
         }
-        else if (x == "2"){
+        else if (input == "2"){
             accessAccount();
         }
-        else if (x == "3"){
+        else if (input == "3"){
             cout << "Goodbye!" << endl;
             break;
         }
@@ -82,7 +82,7 @@ int main() {
             cout << "Invalid bank file try again..." << endl;
         }
     }
-    infoToFile();
+    infoToFile(fileName);
     return 0;
 }
 
@@ -152,6 +152,7 @@ void accessAccount() {
     string savNum;
     string checkNum;
     int clientNum;
+    bool workFlag = false;
 
     cout << "Please input your Checking or Savings account number: ";
     cin >> inputAccNum;
@@ -159,26 +160,45 @@ void accessAccount() {
     // Check if inputed account number is equal to an existing account number
     if (inputAccNum.substr(0, 1) == "S") {
         // if it is savings
-        for (int i = 0; i < bank.size(); i++) {
-            if (bank[i].savAcc.getCloseFlag() == false && stoi(inputAccNum.substr(1, inputAccNum.length())) == stoi(bank[i].savAcc.getAccountNum().substr(1, bank[i].savAcc.getAccountNum().length()))) {
-                // above if statement is just testing the number part of the inputed account number against the existing one
-                clientNum = i;
-                accessSavings(clientNum);
+        try {
+            for (int i = 0; i < bank.size(); i++) {
+                    if (bank[i].savAcc.getCloseFlag() == false && stoi(inputAccNum.substr(1, inputAccNum.length())) == stoi(bank[i].savAcc.getAccountNum().substr(1, bank[i].savAcc.getAccountNum().length()))) {
+                    // above if statement is just testing the number part of the inputed account number against the existing one
+                    clientNum = i;
+                    workFlag = true;
+                    accessSavings(clientNum);
+                }
             }
-            else {
-                cout << "Account has been closed." << endl;
+            if (workFlag == false) {
+                cout << "Account number invalid or closed, try again." << endl;
+                accessAccount();
             }
+        }
+        catch(...) {
+            cout << "Account number invalid or closed, try again." << endl;
+            accessAccount();
         }
     }
 
     else if (inputAccNum.substr(0, 1) == "C") {
         // checking
-        for (int i = 0; i < bank.size(); i++) {
-            if (bank[i].chkAcc.getCloseFlag() == false && stoi(inputAccNum.substr(1, inputAccNum.length())) == stoi(bank[i].chkAcc.getAccountNum().substr(1, bank[i].chkAcc.getAccountNum().length()))) {
-                // above if statement is just testing the number part of the inputed account number against the existing one
-                clientNum = i;
-                accessChecking(clientNum);
+        try {
+            for (int i = 0; i < bank.size(); i++) {
+                if (bank[i].chkAcc.getCloseFlag() == false && stoi(inputAccNum.substr(1, inputAccNum.length())) == stoi(bank[i].chkAcc.getAN().substr(1, bank[i].chkAcc.getAN().length()))) {
+                    // above if statement is just testing the number part of the inputed account number against the existing one
+                    clientNum = i;
+                    workFlag = true;
+                    accessChecking(clientNum);
+                }
             }
+            if (workFlag == false) {
+                cout << "Account number invalid or closed, try again." << endl;
+                accessAccount();
+            }
+        }
+        catch(...) {
+            cout << "Account number invalid or closed, try again." << endl;
+            accessAccount();
         }
     }
 
@@ -202,17 +222,7 @@ void accessSavings(int clientNum){
 
     // loop until user inputs to go back
     while (choice != 4) {
-        cout << "Welcome! User: " << bank[clientNum].savAcc.getAccountNum();
-        if (bank[clientNum].savAcc.getBalance() < 1) { // if the balance is lower than $1, warn the user
-            cout << "ALERT\n"
-            << "The account will shut down permanently unless more money deposited." << endl;
-            bank[clientNum].savAcc.setStatus(false);
-        }
-        else if(bank[clientNum].savAcc.getBalance() < 50){
-            cout << "ALERT\n"
-            << "Your account's balance has gone below $50 withdrawls are denied until balance exceeds $50" << endl;
-            bank[clientNum].savAcc.setStatus(false);
-        }
+        cout << "Welcome! User: " << bank[clientNum].savAcc.getAccountNum() << endl;
         cout << "[1] Deposit\n"
         << "[2] Withdraw\n"
         << "[3] Check Balance\n"
@@ -294,12 +304,7 @@ void accessChecking(int clientNum) {
 
     // loops until user inputs 4
     while (choice != 4) {
-        cout << "Welcome! User: " << bank[clientNum].chkAcc.getAccountNum();
-        if (bank[clientNum].chkAcc.getBalance() < 0) { // if the balance is lower than $1, warn the user
-            cout << "ALERT\n"
-            << "Balance went below zero your account is now considered HIGH RISK." << endl;
-            bank[clientNum].chkAcc.setFlag("*");
-        }
+        cout << "Welcome! User: " << bank[clientNum].chkAcc.getAccountNum() << endl;
         cout << "[1] Deposit\n"
         << "[2] Withdraw\n"
         << "[3] Check Balance\n"
@@ -349,18 +354,13 @@ void createAccounts(client c){
 
     cout << "Creating new accounts...\nEntering new account setup.\n\n";
     accNum = to_string(newAccNum());
-    cout << accNum << endl;
     while(find(begin(numList), end(numList), accNum) != end(numList)){
         accNum = to_string(newAccNum());
     }
     numList.push_back(accNum);
 
-    for (int i = 0; i < numList.size(); i++){
-        cout << numList[i] << endl;
-    }
-
-    cout << "Please enter an initial balance for your new SAVINGS account.\n*Note a minimum initial balance of 50 is required." << endl;
     while(initBal < 50){
+        cout << "Please enter an initial balance for your new SAVINGS account.\n*Note a minimum initial balance of 50 is required." << endl;
         cin >> initBal;
     }
     c.savAcc = Savings(initBal, bankRate, accNum);
@@ -368,8 +368,8 @@ void createAccounts(client c){
 
 
     initBal = 0;
-    cout << "Please enter an initial balance for your new CHECKING account.\n*Note a minimum initial balance of 1 is required." << endl;
     while(initBal < 1){
+        cout << "Please enter an initial balance for your new CHECKING account.\n*Note a minimum initial balance of 1 is required." << endl;
         cin >> initBal;
     }
     c.chkAcc = Checking(initBal, bankRate, accNum);
@@ -423,8 +423,6 @@ void readBankFile(string fileName){
             }
 
             vector <int> createDate = formatDate(accLine[4]);
-            cout << accLine[4] << endl;
-            cout << accLine[5] << endl;
             vector <int> lastAccess = formatDate(accLine[5]);
 
             newClient.savAcc = Savings(stod(accLine[1]), bankRate, line[1], stat, clsFlg, createDate, lastAccess);
@@ -459,11 +457,11 @@ void readBankFile(string fileName){
     }
 }
 
-void infoToFile(){
-    ofstream delOutFile("new.txt", ofstream::trunc);
+void infoToFile(string fileName){
+    ofstream delOutFile(fileName, ofstream::trunc);
     delOutFile.close();
 
-    ofstream outFile ("new.txt", ofstream::app);
+    ofstream outFile (fileName, ofstream::app);
 
     outFile << "Rate " << bankRate << "\n";
 
