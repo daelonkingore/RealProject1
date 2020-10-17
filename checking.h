@@ -1,4 +1,9 @@
-/* Group members: Daelon Kingore M03120686, Ashton Barnwell M03234066 */
+/* Group members: Daelon Kingore M03120686, Ashton Barnwell M03234066 
+
+The Checking class serves as the child class for Account. It puts the C in the account number, 
+and overrides the virtual functions from the parent class. This class is used to withdraw and deposit money from and to a checkings account
+Contains: private variables, 3 constructors to set the variables up, few setters and getters, and
+override functions withdrawal and deposit. */
 
 #include <string>
 using namespace std;

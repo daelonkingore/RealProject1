@@ -1,4 +1,16 @@
-/* Group members: Daelon Kingore M03120686, Ashton Barnwell M03234066 */
+/* Group members: Daelon Kingore M03120686, Ashton Barnwell M03234066 
+
+This is a program that accesses bank files, processes them by 
+determining whether or not a file inputed contains error-free code, separates all of it into their respective vectors.
+Functions: readFromFile(), stringToVector(), accessChecking(int clientNum), accessSavings(int clientNum)
+accessAccount(), newAccNum(), createAccounts(client c), readBankFile(string fileName), getTime(), infoToFile(string fileName),
+and formatDate(string date); 
+
+Notable Features: struct client, fstream, inluded classes (parent classes and sub classes), accessing computer time, switch 
+statments, and a global vector. 
+
+This program uses the structure client, with class variables, to sort and store variables recieved from the input file. It also has the capability
+of creating new inputs to be written in the file. */
 
 #include <iostream>
 #include <cmath>
@@ -383,6 +395,12 @@ void readBankFile(string fileName){
 
     vector <string> file = readFromFile(fileName);
 
+    vector <string> rateTest = stringToVector(file[0]);
+
+    if (rateTest[0] != "Rate"){
+        throw "badFile";
+    }
+
     for(int i = 0; i < file.size(); i++){
         vector <string> line = stringToVector(file[i]);
 
@@ -399,6 +417,10 @@ void readBankFile(string fileName){
             numList.push_back(line[1]);
             client newClient;
             vector <string> accLine = stringToVector(file[i+1]);
+
+            if(accLine.size() != 6){
+                throw "badFile";
+            }
 
             bool stat;
             if (accLine[2] == "false"){
@@ -428,6 +450,10 @@ void readBankFile(string fileName){
             newClient.savAcc = Savings(stod(accLine[1]), bankRate, line[1], stat, clsFlg, createDate, lastAccess);
 
             accLine = stringToVector(file[i+2]);
+
+            if(accLine.size() != 6){
+                throw "badFile";
+            }
 
             if(accLine[2] == "empty"){
                 accLine[2] = "";

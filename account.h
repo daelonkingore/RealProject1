@@ -1,4 +1,11 @@
-/* Group members: Daelon Kingore M03120686, Ashton Barnwell M03234066 */
+/* Group members: Daelon Kingore M03120686, Ashton Barnwell M03234066 
+
+The Account class serves as the parent class for Checking and Savings. It initializes all the initial variables they will need, 
+as well as laying the groundwork for important functions through virtual functions. 
+Contains: protected variables, 3 constructors just to set all the initial variables up, many setters and getters, 
+virtual functions, a getTime() function to get the computers time, and translate it into a usable vector, 
+a calcInt() function that calculates the interest rates, a yearlyCharge function that is commented out because the document explaining
+the project said it is not used, and a stringToVector() function. */
 
 #include <string>
 using namespace std;
