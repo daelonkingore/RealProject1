@@ -63,19 +63,19 @@ vector <int> formatDate(string date);
 // controls the program
 int main() {
     string fileName, input;
-    while(true){
+    while(true){ //Tests to see if the file is a valid input file
         cout << "Enter a bank file." << endl;
         cin >> fileName;
         try{
             readBankFile(fileName);
             break;
         }
-        catch(...){
+        catch(...){ //Catches invalid input files
             cout << "Invalid bank file try again..." << endl;
         }
     }
 
-    while(true){
+    while(true){ //Loops until user inputs 3
         cout << "Please Enter a Command.\n[1] New Account\n[2] Access Existing Account\n[3] Exit" << endl;
 
         cin >> input;
@@ -91,7 +91,7 @@ int main() {
             break;
         }
         else{
-            cout << "Invalid bank file try again..." << endl;
+            cout << "Invalid input try again" << endl;
         }
     }
     infoToFile(fileName);
@@ -365,13 +365,13 @@ void createAccounts(client c){
     string accNum;
 
     cout << "Creating new accounts...\nEntering new account setup.\n\n";
-    accNum = to_string(newAccNum());
+    accNum = to_string(newAccNum()); //Creates a random number for the new account
     while(find(begin(numList), end(numList), accNum) != end(numList)){
         accNum = to_string(newAccNum());
     }
-    numList.push_back(accNum);
+    numList.push_back(accNum); //add the new account number to a vector of all account numbers
 
-    while(initBal < 50){
+    while(initBal < 50){ //Makes sure balance is not below 50
         cout << "Please enter an initial balance for your new SAVINGS account.\n*Note a minimum initial balance of 50 is required." << endl;
         cin >> initBal;
     }
@@ -380,29 +380,31 @@ void createAccounts(client c){
 
 
     initBal = 0;
-    while(initBal < 1){
+    while(initBal < 1){ //Makes sure balance is not below 1
         cout << "Please enter an initial balance for your new CHECKING account.\n*Note a minimum initial balance of 1 is required." << endl;
         cin >> initBal;
     }
     c.chkAcc = Checking(initBal, bankRate, accNum);
     cout << "New CHECKING account created.\nYour account number for this account is " << c.chkAcc.getAccountNum() << endl;
 
-    bank.push_back(c);
+    bank.push_back(c); //Adds new client to bank
 }
 
 // Reads the base file for the bank
 void readBankFile(string fileName){
-
+    /*This function is a long one it has various checks to see if each line is an allowed
+    user input from the file
+    */
     vector <string> file = readFromFile(fileName);
 
     vector <string> rateTest = stringToVector(file[0]);
 
-    if (rateTest[0] != "Rate"){
+    if (rateTest[0] != "Rate"){ //Makes sure the first word is Rate
         throw "badFile";
     }
 
-    for(int i = 0; i < file.size(); i++){
-        vector <string> line = stringToVector(file[i]);
+    for(int i = 0; i < file.size(); i++){ //Loops through the file
+        vector <string> line = stringToVector(file[i]); //Splits the current line
 
         if (line[0] == "Rate"){ //Gets bank rate from file
             if(stod(line[1]) >= 0.1 && stod(line[1]) <= 10){
@@ -444,8 +446,8 @@ void readBankFile(string fileName){
                 throw "badFile";
             }
 
-            vector <int> createDate = formatDate(accLine[4]);
-            vector <int> lastAccess = formatDate(accLine[5]);
+            vector <int> createDate = formatDate(accLine[4]); //Grabs creation date data
+            vector <int> lastAccess = formatDate(accLine[5]); //Grabs last access Data
 
             newClient.savAcc = Savings(stod(accLine[1]), bankRate, line[1], stat, clsFlg, createDate, lastAccess);
 
@@ -483,6 +485,7 @@ void readBankFile(string fileName){
     }
 }
 
+//Function used to write to the file program was read from.
 void infoToFile(string fileName){
     ofstream delOutFile(fileName, ofstream::trunc);
     delOutFile.close();
