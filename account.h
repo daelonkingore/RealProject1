@@ -7,12 +7,12 @@ class Account {
         string accountNum;
         double balance;
         double annualInterestRate;
-        double annualServiceChrg;
+        double annualServiceChrg = 5;
         double dailyInterestRate;
         double dailyinterest;
-        bool yearChrg = false;
         bool closeFlag = false;
         vector <int> date;
+        vector <int> lastAccessDate;
 
     public:
 
@@ -26,15 +26,18 @@ class Account {
             annualInterestRate = interestRate;
             accountNum = accNum;
             date = getTime();
+            lastAccessDate = date;
         }
 
-        Account(double initialBalance, double interestRate, string accNum, bool closeFlg) {
+        Account(double initialBalance, double interestRate, string accNum, bool closeFlg, vector <int> createDate, vector <int> lastAccess) {
             /* Accepts arguments for the initial balance, an annual interest rate, and a
             unique account number */
             balance = initialBalance;
             annualInterestRate = interestRate;
             accountNum = accNum;
             closeFlag = closeFlg;
+            date = createDate;
+            lastAccessDate = lastAccess;
         }
 
         // setters for some of the protected variables
@@ -96,8 +99,13 @@ class Account {
         // yearly charge may be used later
         void yearlyCharge() {
             /* A function that will subtract the yearly service charge from the balance. */
-            yearChrg = true;
-            balance -= annualServiceChrg;
+            vector <int> accessDate = getTime();
+
+            if(accessDate[2] > date[2] && accessDate[1] > date[1] && accessDate[0] > date[0]){
+                if(lastYearlyCharge < accessDate[2]){
+                    balance -= annualServiceChrg;
+                }
+            }
         }
 
         // Converts string to vector
@@ -113,13 +121,13 @@ class Account {
             }
             return lineList;
         }
-        
+
 
         vector <int> getTime() {
             /* Gets the time and date from the computer and put it into a vector, erases
             useless parts, turns the date into numbers and put into date vector.
             Returns the date vector.
-            
+
             Contains: use of ctime and chrono, if and if else statements, vectors */
 
             string timeAndDate, strMonth;
