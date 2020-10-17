@@ -58,4 +58,7 @@ class Checking : public Account {
             return flag;
         }
 
+        void setFlag(string newFlag){
+            flag = newFlag;
+        }
 };
